@@ -1,32 +1,32 @@
 import React, { Component, useState } from 'react';
-import { View, TextInput, Text, StyleSheet, Button } from 'react-native';
+import { View, Text,  TouchableOpacity } from 'react-native';
 import Styles from './styles';
-import { Picker } from '@react-native-community/picker';
-import DateTimePicker from '@react-native-community/datetimepicker';
-import CheckBox from '@react-native-community/checkbox';
 
-const StatisticScreen = () => {
+const StatisticScreen = ({navigation}) => {
   const [type, setType] = useState();
 
   return (
     <View style={Styles.screen}>
       <View style={Styles.container}>
         <Text style={Styles.title}>THỐNG KÊ</Text>
-
-        <View style={Styles.fieldContainer}>
-            <View
-              style={Styles.selectField}
-            >
-              <Picker
-                selectedValue={type}
-                itemStyle={Styles.selectItem}
-                onValueChange={(v, i) => setType(v)}
-              >
-                <Picker.Item label="Người mua" value="0" />
-              </Picker>
-            </View>
-          </View>
-
+        <TouchableOpacity
+          style={[Styles.btnContainer, { backgroundColor: "#F67280" }]}
+          onPress={() => navigation.navigate('ManageMember')}
+        >
+          <Text style={Styles.btnText}>Thống kê người mua</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={[Styles.btnContainer, { backgroundColor: "#6C5B7B" }]}
+          onPress={() => navigation.navigate('StatisticSelling')}
+        >
+          <Text style={Styles.btnText}>Thống kê bán hàng</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={[Styles.btnContainer, { backgroundColor: "#F8B195" }]}
+          onPress={() => navigation.navigate('StatisticSelling')}
+        >
+          <Text style={Styles.btnText}>Thống kê nhập hàng</Text>
+        </TouchableOpacity>
       </View>
     </View>
   );

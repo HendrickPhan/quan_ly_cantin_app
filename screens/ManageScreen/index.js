@@ -11,24 +11,25 @@ const ManageScreen = ({ navigation }) => {
   return (
     <View style={Styles.screen}>
       <View style={Styles.container}>
-            <TouchableOpacity
-              style={[Styles.btnContainer, {backgroundColor: "#F67280"}]}
-              onPress={() => navigation.navigate('ManageMember')}
-            >
-              <Text style={Styles.btnText}>Quản lý người mua</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={[Styles.btnContainer, {backgroundColor: "#6C5B7B"}]}
-              onPress={() => navigation.navigate('ManageSellingGood')}
-            >
-              <Text style={Styles.btnText}>Quản lý mặt hàng bán</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={[Styles.btnContainer, {backgroundColor: "#F8B195"}]}
-              onPress={() => navigation.navigate('ManageImportGood')}
-            >
-              <Text style={Styles.btnText}>Quản lý mặt hàng nhập</Text>
-            </TouchableOpacity>
+        <Text style={Styles.title}>QUẢN LÝ</Text>
+        <TouchableOpacity
+          style={[Styles.btnContainer, { backgroundColor: "#F67280" }]}
+          onPress={() => navigation.navigate('ManageMember')}
+        >
+          <Text style={Styles.btnText}>Quản lý người mua</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={[Styles.btnContainer, { backgroundColor: "#6C5B7B" }]}
+          onPress={() => navigation.navigate('ManageSellingGood')}
+        >
+          <Text style={Styles.btnText}>Quản lý mặt hàng bán</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={[Styles.btnContainer, { backgroundColor: "#F8B195" }]}
+          onPress={() => navigation.navigate('ManageImportGood')}
+        >
+          <Text style={Styles.btnText}>Quản lý mặt hàng nhập</Text>
+        </TouchableOpacity>
       </View>
     </View>
   );

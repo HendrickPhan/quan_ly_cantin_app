@@ -5,6 +5,7 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import CheckBox from '@react-native-community/checkbox';
 import Styles from './styles';
 import Settings from '../../settings';
+import { NumberWithCommas, DateStrFromDateTime } from '../../ulti'
 import { useSelector } from "react-redux";
 
 const SellingScreen = () => {
@@ -103,9 +104,8 @@ const SellingScreen = () => {
         total += good.price * bv.quantity 
       }
     })
-    console.log("TOTAL")
-    console.log(total)
     setTotal(total)
+    setTotalLeft(total - paidAmount)
   }
   
   const changeBuyingItem = (bi, value) => { 
@@ -149,12 +149,12 @@ const SellingScreen = () => {
       "date": date,
       "owe": owe,
       "total": total * 1,
-      "paid": paidAmount * 1,
+      "paid": paidAmount * 1 || 0,
       "items": itemList,
-      "member_id": member * 1
     } 
-
-    console.log(postData)
+    if(member * 1 !== 0) {
+      postData.member_id = member * 1
+    }
 
     fetch(Settings.API_DOMAIN + "selling-bill", {
       method: 'post',
@@ -172,13 +172,6 @@ const SellingScreen = () => {
           return response.json()
         } else {
           //failed
-        }
-      })
-      .then((response) => {
-        if (response.status === 200) {
-          return response.json()
-        } else {
-          //failed
           throw new Error('Oh no!');
         }
       })
@@ -188,6 +181,7 @@ const SellingScreen = () => {
         setTimeout(() => { setMessage(null) }, 3000);
       })
       .catch( (e) => {
+        console.log(e)
         setMessage('THẤT BẠI!')
         setTimeout(() => { setMessage(null) }, 3000);
       })
@@ -318,7 +312,7 @@ const SellingScreen = () => {
           {/* Total */}
           <View style={Styles.fieldContainer}>
             <Text style={{ alignSelf: "center" }}>Tổng cộng: </Text>
-            <Text style={{ alignSelf: "center", fontWeight: "bold", fontSize: 20 }}>{total}</Text>
+            <Text style={{ alignSelf: "center", fontWeight: "bold", fontSize: 20 }}>{NumberWithCommas(total)}</Text>
           </View>
 
           <View style={Styles.fieldContainer}>
@@ -348,7 +342,7 @@ const SellingScreen = () => {
 
               <View style={Styles.fieldContainer}>
                 <Text style={{ alignSelf: "center" }}>Còn lại: </Text>
-                <Text style={{ alignSelf: "center", fontWeight: "bold", fontSize: 20 }}>{totalLeft || 0}</Text>
+                <Text style={{ alignSelf: "center", fontWeight: "bold", fontSize: 20 }}>{totalLeft ? NumberWithCommas(totalLeft) : 0}</Text>
               </View>
             </React.Fragment>
           }

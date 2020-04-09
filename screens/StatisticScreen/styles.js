@@ -22,20 +22,20 @@ const styles = StyleSheet.create({
     color: "#355C7D",
     fontWeight: "bold"
   },
-  fieldContainer: {
-    flexDirection: "row",
-    margin: 10
-  },
-  selectTitle: {
-    alignSelf: "center",
-    fontSize: 20,
-    flex: 1
-  },
-  selectField: {
+  
+  btnContainer: {
+    margin: 5,
+    borderWidth: 2,
     borderRadius: 10,
-    borderWidth: 1,
-    flex: 1
+    flex: 1,
+    justifyContent: "center",
   },
+  btnText: {
+    color: "#fff",
+    fontSize: 24,
+    alignSelf: "center",
+    
+  }
 })
 
 export default styles

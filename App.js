@@ -31,8 +31,9 @@ import ManageScreen from './screens/ManageScreen';
 import ManageMemberScreen from './screens/ManageMemberScreen';
 import ManageImportGoodScreen from './screens/ManageImportGoodScreen';
 import ManageSellingGoodScreen from './screens/ManageSellingGoodScreen';
-import StatisticScreen from './screens/StatisticScreen';
 import AccountScreen from './screens/AccountScreen';
+import StatisticScreen from './screens/StatisticScreen';
+import StatisticSellingScreen from './screens/StatisticSellingScreen';
 
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
@@ -118,6 +119,9 @@ const App: () => React$Node = () => {
         <Stack.Screen name="ManageMember" component={ManageMemberScreen} />
         <Stack.Screen name="ManageImportGood" component={ManageImportGoodScreen} />
         <Stack.Screen name="ManageSellingGood" component={ManageSellingGoodScreen} />
+        
+        <Stack.Screen name="StatisticSelling" component={StatisticSellingScreen} />
+        
         
       </Stack.Navigator>
     </NavigationContainer>
