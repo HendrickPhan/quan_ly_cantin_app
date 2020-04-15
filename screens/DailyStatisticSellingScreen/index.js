@@ -8,21 +8,16 @@ import Styles from './styles';
 import Settings from '../../settings';
 import { useSelector } from "react-redux";
 
-const StatisticSellingScreen = () => {
-  const [type, setType] = useState("0");
-  const [fromDate, setFromDate] = useState(new Date());
-  const [toDate, setToDate] = useState(new Date());
-  const [showFromDatePicker, setShowFromDatePicker] = useState(false);
-  const [showToDatePicker, setShowToDatePicker] = useState(false);
-  
+const DailyStatisticSellingScreen = ({ route, navigation }) => {
+  const { date } = route.params || DateStrFromDateTime(new date());
   const [statisticList, setStatisticList] = useState([]);
 
   const token = useSelector(state => {
     return state.user.user ? state.user.user.token : null
   });
-
   const fetchStatistic = () => {
-    fetch(Settings.API_DOMAIN + `selling-bill/statistic?from_date=${DateStrFromDateTime(fromDate)}&to_date=${DateStrFromDateTime(toDate)}`, {
+    console.log(Settings.API_DOMAIN + `selling-bill/daily-statistic?date=${date}`)
+    fetch(Settings.API_DOMAIN + `selling-bill/daily-statistic?date=${date}`, {
       method: 'get',
       headers: {
         Accept: 'application/json',
@@ -39,94 +34,47 @@ const StatisticSellingScreen = () => {
         }
       })
       .then((data) => {
+        console.log('xxxx')
+        console.log(data)
         setStatisticList(data)
       })
   }
 
   useEffect(() => {
     fetchStatistic()
-  }, [fromDate, toDate]);
-
+  }, [date]);
+  console.log(statisticList)
   return (
     <ScrollView style={Styles.screen}
 
     >
       <View style={Styles.container}>
-        <Text style={Styles.title}>THỐNG KÊ BÁN HÀNG</Text>
-
-        <View style={Styles.fieldContainer}>
-          <Text style={Styles.date}>Từ ngày: {`${fromDate.getDate()}/${fromDate.getMonth()}/${fromDate.getFullYear()} `}</Text>
-          <View style={Styles.btnContainer}>
-            <Button
-              color="#F8B195"
-              title="Đổi"
-              onPress={() => setShowFromDatePicker(true)}
-            />
-          </View>
-        </View>
-        <View style={Styles.fieldContainer}>
-          <Text style={Styles.date}>Đến ngày: {`${toDate.getDate()}/${toDate.getMonth()}/${toDate.getFullYear()} `}</Text>
-          <View style={Styles.btnContainer}>
-            <Button
-              color="#C06C84"
-              title="Đổi"
-              onPress={() => setShowToDatePicker(true)}
-            />
-          </View>
-        </View>
+      <Text style={Styles.title}>THỐNG KÊ BÁN HÀNG NGÀY {date}</Text>
 
         <View style={Styles.listTitleContainer}>
-          <Text style={Styles.listTitle}>Ngày</Text>
+          <Text style={Styles.listTitle}>Người mua</Text>
           <Text style={Styles.listTitle}>Đã trả</Text>
           <Text style={Styles.listTitle}>Nợ</Text>
           <Text style={Styles.listTitle}>Tổng</Text>
         </View>
 
         {statisticList.map((v, i) => {
-          var date = v.gdate.split("-")
-          date = date[2] + '/' + date[1] + '/' + date[0]
           return (
-            <TouchableOpacity 
+            <View 
               key={i} 
               style={Styles.listItemContainer}
             >
-              <Text style={Styles.listItem}>{date}</Text>
+              <Text style={Styles.listItem}>{v.member ? v.member.name : 'Không lưu'}</Text>
               <Text style={[Styles.listItem, { textAlign: "right" }]}>{NumberWithCommas(v.total_paid)}</Text>
               <Text style={[Styles.listItem, { textAlign: "right" }]}>{NumberWithCommas(v.total_total - v.total_paid)}</Text>
               <Text style={[Styles.listItem, { textAlign: "right" }]}>{NumberWithCommas(v.total_total)}</Text>
-            </TouchableOpacity>
+            </View>
           )
         })}
 
       </View>
-
-      {showFromDatePicker &&
-        <DateTimePicker
-          value={fromDate}
-          mode="date"
-          display="default"
-          onChange={(event, selectedDate) => {
-            const currentDate = selectedDate || date;
-            setShowFromDatePicker(Platform.OS === 'ios');
-            setFromDate(currentDate);
-          }}
-        />
-      }
-      {showToDatePicker &&
-        <DateTimePicker
-          value={toDate}
-          mode="date"
-          display="default"
-          onChange={(event, selectedDate) => {
-            const currentDate = selectedDate || date;
-            setShowToDatePicker(Platform.OS === 'ios');
-            setToDate(currentDate);
-          }}
-        />
-      }
-
     </ScrollView>
   );
 }
 
-export default StatisticSellingScreen
+export default DailyStatisticSellingScreen
