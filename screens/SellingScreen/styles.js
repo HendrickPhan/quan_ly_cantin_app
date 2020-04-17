@@ -75,6 +75,12 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     alignSelf: "center",
     margin: 5
+  },
+  btn: {
+    borderWidth: 1,
+    borderRadius: 4,
+    padding: 3,
+    fontSize: 20,
   }
 })
 

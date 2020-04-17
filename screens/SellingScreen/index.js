@@ -1,191 +1,197 @@
 import React, { Component, useEffect, useState } from 'react';
-import { View, TextInput, Text, Button, ScrollView, RefreshControl } from 'react-native';
+import { View, TextInput, Text, Button, ScrollView, RefreshControl, TouchableOpacity } from 'react-native';
 import { Picker } from '@react-native-community/picker';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import CheckBox from '@react-native-community/checkbox';
 import Styles from './styles';
 import Settings from '../../settings';
-import { NumberWithCommas, DateStrFromDateTime } from '../../ulti'
 import { useSelector } from "react-redux";
 
-const SellingScreen = () => {
-  const [message, setMessage] = useState();
-  
-  const [refreshing, setRefreshing] = useState(false);
-  const [goodList, setGoodList] = useState([]);
-  const [memberList, setMemberList] = useState([]);
+const SellingScreen = ({navigation}) => {
+const [message, setMessage] = useState();
 
-  const [date, setDate] = useState(new Date());
-  const [showDatePicker, setShowDatePicker] = useState(false);
+const [refreshing, setRefreshing] = useState(false);
+const [goodList, setGoodList] = useState([]);
+const [memberList, setMemberList] = useState([]);
 
-  const [owe, setOwe] = useState(false);
-  const [paidAmount, setPaidAmount] = useState();
-  const [totalLeft, setTotalLeft] = useState();
-  
-  const [member, setMember] = useState("0");
+const [date, setDate] = useState(new Date());
+const [showDatePicker, setShowDatePicker] = useState(false);
 
-  const [total, setTotal] = useState("0");
+const [owe, setOwe] = useState(false);
+const [paidAmount, setPaidAmount] = useState();
+const [totalLeft, setTotalLeft] = useState();
 
-  const defaultBuyItem = {
+const [member, setMember] = useState("0");
+
+const [total, setTotal] = useState("0");
+
+const defaultBuyItem = {
     id: 0,
     quantity: null
-  }
-  const [buyList, setBuyList] = useState([
+}
+const [buyList, setBuyList] = useState([
     defaultBuyItem
-  ]);
+]);
 
-  const token = useSelector(state => {
+const token = useSelector(state => {
     return state.user.user ? state.user.user.token : null
-  });
+});
 
-  const fetchGoods = () => {
+const fetchGoods = () => {
     fetch(Settings.API_DOMAIN + "selling-good", {
-      method: 'get',
-      headers: {
+    method: 'get',
+    headers: {
         Accept: 'application/json',
         'Content-Type': 'application/json',
         'Authorization': 'Bearer ' + token
-      },
+    },
     })
-      .then((response) => {
+    .then((response) => {
         if (response.status === 200) {
-          return response.json()
+        return response.json()
         } else {
-          //failed
+        //failed
         }
-      })
-      .then((data) => {
+    })
+    .then((data) => {
         setGoodList(data)
-      })
-  }
+    })
+}
 
-  const fetchMembers = () => {
+const fetchMembers = () => {
     fetch(Settings.API_DOMAIN + "member", {
-      method: 'get',
-      headers: {
+    method: 'get',
+    headers: {
         Accept: 'application/json',
         'Content-Type': 'application/json',
         'Authorization': 'Bearer ' + token
-      },
+    },
     })
-      .then((response) => {
+    .then((response) => {
         if (response.status === 200) {
-          return response.json()
+        return response.json()
         } else {
-          //failed
+        //failed
         }
-      })
-      .then((data) => {
+    })
+    .then((data) => {
         setMemberList(data)
-      })
-  }
+    })
+}
 
-  useEffect(() => {
+useEffect(() => {
     fetchGoods()
     fetchMembers()
-  }, []);
+}, []);
 
-  const refresh = () => {
+const refresh = () => {
     setRefreshing(true)
     fetchGoods()
     fetchMembers()
     setRefreshing(false)
-  }
+}
 
-  const addBuying = () => {
+const addBuying = () => {
     setBuyList([...buyList, defaultBuyItem])
-  }
+}
 
-  const calculateTotal = (bl=buyList) => {
+const calculateTotal = (bl=buyList) => {
     var total = 0
     bl.map((bv) => {
-      var good = goodList.filter((v, i) => v.id == bv.id).shift()
-      if(good) {
+    var good = goodList.filter((v, i) => v.id == bv.id).shift()
+    if(good) {
         total += good.price * bv.quantity 
-      }
+    }
     })
+    console.log("TOTAL")
+    console.log(total)
     setTotal(total)
-    setTotalLeft(total - paidAmount)
-  }
-  
-  const changeBuyingItem = (bi, value) => { 
+}
+
+const changeBuyingItem = (bi, value) => { 
     setBuyList(buyList.map((v, i) => {
-      if(i == bi ) {
+    if(i == bi ) {
         v.id = value
-      }
-      return v
+    }
+    return v
     }))
     calculateTotal()
-  }
+}
 
-  const setBuyingQuantity = (bi, value) => { 
+const setBuyingQuantity = (bi, value) => { 
     setBuyList(buyList.map((v, i) => {
-      if(i == bi ) {
+    if(i == bi ) {
         v.quantity = value
-      }
-      return v
+    }
+    return v
     }))
     calculateTotal()
-  }
+}
 
-  const deleteBuying = (bi) => {
+const deleteBuying = (bi) => {
     var bl = buyList.filter((_, i) => i !== bi)
     calculateTotal(bl)
     setBuyList(bl)
-  }
+}
 
-  const createBill = () => {
+const createBill = () => {
     var itemList = []
     buyList.map( v => {
-      if(v.id > 0 && v.quantity > 0){
+    if(v.id > 0 && v.quantity > 0){
         itemList.push({
-          "good_id": v.id * 1,
-          "quantity": v.quantity * 1
+        "good_id": v.id * 1,
+        "quantity": v.quantity * 1
         })
-      }
+    }
     })
 
     var postData = {
-      "date": date,
-      "owe": owe,
-      "total": total * 1,
-      "paid": paidAmount * 1 || 0,
-      "items": itemList,
+    "date": date,
+    "owe": owe,
+    "total": total * 1,
+    "paid": paidAmount * 1,
+    "items": itemList,
+    "member_id": member * 1
     } 
-    if(member * 1 !== 0) {
-      postData.member_id = member * 1
-    }
+
+    console.log(postData)
 
     fetch(Settings.API_DOMAIN + "selling-bill", {
-      method: 'post',
-      headers: {
+    method: 'post',
+    headers: {
         Accept: 'application/json',
         'Content-Type': 'application/json',
         'Authorization': 'Bearer ' + token
-      },
-      body: JSON.stringify(
+    },
+    body: JSON.stringify(
         postData
-      ),
+    ),
     })
-      .then((response) => {
+    .then((response) => {
         if (response.status === 200) {
-          return response.json()
+        return response.json()
         } else {
-          //failed
-          throw new Error('Oh no!');
+        //failed
         }
-      })
-      .then((data) => {
-       
+    })
+    .then((response) => {
+        if (response.status === 200) {
+        return response.json()
+        } else {
+        //failed
+        throw new Error('Oh no!');
+        }
+    })
+    .then((data) => {
+    
         setMessage('Thêm thành công!')
         setTimeout(() => { setMessage(null) }, 3000);
-      })
-      .catch( (e) => {
-        console.log(e)
+    })
+    .catch( (e) => {
         setMessage('THẤT BẠI!')
         setTimeout(() => { setMessage(null) }, 3000);
-      })
-      .finally( () => {
+    })
+    .finally( () => {
         setDate(new Date())
         setOwe(false)
         setPaidAmount(null)
@@ -193,170 +199,176 @@ const SellingScreen = () => {
         setMember("0")
         setTotal("0")
         setBuyList([defaultBuyItem])
-      })
-  }
+    })
+}
 
-  return (
+return (
     <ScrollView style={Styles.screen}
-      refreshControl={
+    refreshControl={
         <RefreshControl
-          refreshing={refreshing}
-          onRefresh={() => refresh()}
+        refreshing={refreshing}
+        onRefresh={() => refresh()}
         />
-      }
+    }
     >
-      <View style={Styles.screen}>
+    <View style={Styles.screen}>
         <View style={Styles.container}>
+        <TouchableOpacity
+            style={Styles.btnContainer}
+            onPress={() => navigation.navigate('SellingListScreen')}>
+            <Text style={Styles.btn}>Danh Sách</Text>
+        </TouchableOpacity>
 
-          <Text style={Styles.title}>BÁN HÀNG</Text>
-          {/* Message */}
-          {message && 
+        <Text style={Styles.title}>BÁN HÀNG</Text>
+        
+        {/* Message */}
+        {message && 
             <Text style={Styles.message}>{message}</Text>
-          }
-          {/* Buying member */}
-          <View style={Styles.fieldContainer}>
+        }
+        {/* Buying member */}
+        <View style={Styles.fieldContainer}>
             <View
-              style={Styles.selectField}
+            style={Styles.selectField}
             >
-              <Picker
+            <Picker
                 selectedValue={member}
                 itemStyle={Styles.selectItem}
                 onValueChange={(v, i) => setMember(v)}
-              >
+            >
                 <Picker.Item label="Người mua" value="0" />
                 {memberList.map((v) => {
-                  return (
+                return (
                     <Picker.Item key={v.id} label={v.name} value={v.id} />
-                  )
+                )
                 })}
-              </Picker>
+            </Picker>
             </View>
-          </View>
-          {/* Buying date */}
-          <View style={Styles.fieldContainer}>
+        </View>
+        {/* Buying date */}
+        <View style={Styles.fieldContainer}>
             <Text style={Styles.date}>Ngày mua: {`${date.getDate()}/${date.getMonth()}/${date.getFullYear()} `}</Text>
             <View style={Styles.btnContainer}>
-              <Button
+            <Button
                 color="#6C5B7B"
                 title="Đổi"
                 onPress={() => setShowDatePicker(true)}
-              />
+            />
             </View>
-          </View>
+        </View>
 
-          {showDatePicker &&
+        {showDatePicker &&
             <DateTimePicker
-              testID="dateTimePicker"
-              value={date}
-              mode="datetime"
-              display="default"
-              onChange={(event, selectedDate) => {
+            testID="dateTimePicker"
+            value={date}
+            mode="datetime"
+            display="default"
+            onChange={(event, selectedDate) => {
                 const currentDate = selectedDate || date;
                 setShowDatePicker(Platform.OS === 'ios');
                 setDate(currentDate);
-              }}
+            }}
             />
-          }
-          {/* Buying item list */}
-          <Text style={Styles.buyingListTitle}>Danh sách mặt hàng</Text>
+        }
+        {/* Buying item list */}
+        <Text style={Styles.buyingListTitle}>Danh sách mặt hàng</Text>
             {buyList.map((bv, bi) => {
-              
-              return bv && (
+            
+            return bv && (
                 <View style={Styles.fieldContainer} key={bi}>
-                  <View style={Styles.selectByingField}>
+                <View style={Styles.selectByingField}>
                     <Picker
-                      selectedValue={bv.id}
-                      style={Styles.selectItem}
-                      onValueChange={(v, i) => {
+                    selectedValue={bv.id}
+                    style={Styles.selectItem}
+                    onValueChange={(v, i) => {
                         changeBuyingItem(bi, v)}
-                      }
+                    }
                     >
-                      <Picker.Item label="Mặt hàng" value="0" />
-                      {goodList.map((v) => {
+                    <Picker.Item label="Mặt hàng" value="0" />
+                    {goodList.map((v) => {
                         return (
-                          <Picker.Item key={v.id} label={v.name} value={v.id} />
+                        <Picker.Item key={v.id} label={v.name} value={v.id} />
                         )
-                      })}
+                    })}
                     </Picker>
-                  </View>
-                  <TextInput
+                </View>
+                <TextInput
                     keyboardType='numeric'
                     style={Styles.buyingQuantityInput}
                     onChangeText={(text) => {
-                      setBuyingQuantity(bi, text)
+                    setBuyingQuantity(bi, text)
                     }}
                     value={bv.quantity}
                     placeholder="Số lượng"
-                  />
-                  <View style={Styles.btnContainer}>
+                />
+                <View style={Styles.btnContainer}>
                     <Button
-                      title="X"
-                      onPress={ () => { deleteBuying(bi) } }
-                      color="#F67280"
+                    title="X"
+                    onPress={ () => { deleteBuying(bi) } }
+                    color="#F67280"
                     />
-                  </View>
                 </View>
-              )
+                </View>
+            )
             })}
 
             <View style={Styles.btnContainer}>
-              <Button
+            <Button
                 color="#F8B195"
                 title="Thêm"
                 onPress={() => addBuying() }
-              />
+            />
             </View>
 
 
-          
-          {/* Total */}
-          <View style={Styles.fieldContainer}>
+        
+        {/* Total */}
+        <View style={Styles.fieldContainer}>
             <Text style={{ alignSelf: "center" }}>Tổng cộng: </Text>
-            <Text style={{ alignSelf: "center", fontWeight: "bold", fontSize: 20 }}>{NumberWithCommas(total)}</Text>
-          </View>
+            <Text style={{ alignSelf: "center", fontWeight: "bold", fontSize: 20 }}>{total}</Text>
+        </View>
 
-          <View style={Styles.fieldContainer}>
+        <View style={Styles.fieldContainer}>
             <Text style={{ alignSelf: "center" }}>Nợ ?</Text>
             <CheckBox
-              title='Nợ'
-              onValueChange={() => {
+            title='Nợ'
+            onValueChange={() => {
                 setOwe(!owe)
                 setTotalLeft(total - paidAmount)
-              }}
-              value={owe}
+            }}
+            value={owe}
             />
-          </View>
+        </View>
 
-          {owe &&
+        {owe &&
             <React.Fragment>
-              <TextInput
+            <TextInput
                 keyboardType='numeric'
                 style={Styles.textInput}
                 onChangeText={(text) => {
-                  setTotalLeft(total - text)
-                  return setPaidAmount(text)
+                setTotalLeft(total - text)
+                return setPaidAmount(text)
                 }}
                 value={paidAmount}
                 placeholder="Số tiền đã thanh toán"
-              />
+            />
 
-              <View style={Styles.fieldContainer}>
+            <View style={Styles.fieldContainer}>
                 <Text style={{ alignSelf: "center" }}>Còn lại: </Text>
-                <Text style={{ alignSelf: "center", fontWeight: "bold", fontSize: 20 }}>{totalLeft ? NumberWithCommas(totalLeft) : 0}</Text>
-              </View>
+                <Text style={{ alignSelf: "center", fontWeight: "bold", fontSize: 20 }}>{totalLeft || 0}</Text>
+            </View>
             </React.Fragment>
-          }
+        }
             {/* create btn */}
             <View style={Styles.btnContainer}>
-              <Button
+            <Button
                 title="Tạo"
                 onPress={() => createBill() }
-              />
+            />
             </View>
         </View>
-      </View>
+    </View>
     </ScrollView>
-  );
+);
 }
 
 export default SellingScreen

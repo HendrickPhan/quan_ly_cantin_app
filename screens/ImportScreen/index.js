@@ -173,7 +173,6 @@ const SellingScreen = () => {
     >
       <View style={Styles.screen}>
         <View style={Styles.container}>
-
           <Text style={Styles.title}>NHẬP HÀNG</Text>
           {/* Message */}
           {message && 

@@ -3,5 +3,5 @@ export const NumberWithCommas = (x) => {
 }
 
 export const DateStrFromDateTime = (dateTime) => {
-  return dateTime.toISOString().slice(0,10);
+  return dateTime.toISOString().slice(0,10).replace(/-/g,"");
 }

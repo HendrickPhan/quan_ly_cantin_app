@@ -8,13 +8,13 @@ import Styles from './styles';
 import Settings from '../../settings';
 import { useSelector } from "react-redux";
 
-const StatisticSellingScreen = ({navigation}) => {
+const StatisticSellingScreen = () => {
   const [type, setType] = useState("0");
   const [fromDate, setFromDate] = useState(new Date());
   const [toDate, setToDate] = useState(new Date());
   const [showFromDatePicker, setShowFromDatePicker] = useState(false);
   const [showToDatePicker, setShowToDatePicker] = useState(false);
-
+  
   const [statisticList, setStatisticList] = useState([]);
 
   const token = useSelector(state => {
@@ -86,15 +86,9 @@ const StatisticSellingScreen = ({navigation}) => {
           var date = v.gdate.split("-")
           date = date[2] + '/' + date[1] + '/' + date[0]
           return (
-            <TouchableOpacity
-              key={i}
+            <TouchableOpacity 
+              key={i} 
               style={Styles.listItemContainer}
-              onPress={() => {
-                  navigation.navigate('DailyStatisticSelling', {
-                    date: DateStrFromDateTime(new Date(v.gdate)),
-                  });
-                }
-              }
             >
               <Text style={Styles.listItem}>{date}</Text>
               <Text style={[Styles.listItem, { textAlign: "right" }]}>{NumberWithCommas(v.total_paid)}</Text>
