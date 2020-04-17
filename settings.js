@@ -1,5 +1,5 @@
 const Settings = {
-  "API_DOMAIN": "https://salty-beyond-19208.herokuapp.com/api/",
+  "API_DOMAIN": "http://192.168.1.7:8000/api/",
 }
 
 export default Settings

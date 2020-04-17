@@ -5,6 +5,7 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import CheckBox from '@react-native-community/checkbox';
 import Styles from './styles';
 import Settings from '../../settings';
+import { NumberWithCommas, DateStrFromDateTime } from '../../ulti'
 import { useSelector } from "react-redux";
 
 const SellingScreen = ({navigation}) => {
@@ -103,12 +104,11 @@ const calculateTotal = (bl=buyList) => {
         total += good.price * bv.quantity 
     }
     })
-    console.log("TOTAL")
-    console.log(total)
     setTotal(total)
-}
-
-const changeBuyingItem = (bi, value) => { 
+    setTotalLeft(total - paidAmount)
+  }
+  
+  const changeBuyingItem = (bi, value) => { 
     setBuyList(buyList.map((v, i) => {
     if(i == bi ) {
         v.id = value
@@ -146,15 +146,15 @@ const createBill = () => {
     })
 
     var postData = {
-    "date": date,
-    "owe": owe,
-    "total": total * 1,
-    "paid": paidAmount * 1,
-    "items": itemList,
-    "member_id": member * 1
+      "date": date,
+      "owe": owe,
+      "total": total * 1,
+      "paid": paidAmount * 1 || 0,
+      "items": itemList,
     } 
-
-    console.log(postData)
+    if(member * 1 !== 0) {
+      postData.member_id = member * 1
+    }
 
     fetch(Settings.API_DOMAIN + "selling-bill", {
     method: 'post',
@@ -166,13 +166,6 @@ const createBill = () => {
     body: JSON.stringify(
         postData
     ),
-    })
-    .then((response) => {
-        if (response.status === 200) {
-        return response.json()
-        } else {
-        //failed
-        }
     })
     .then((response) => {
         if (response.status === 200) {
@@ -243,10 +236,10 @@ return (
                 })}
             </Picker>
             </View>
-        </View>
-        {/* Buying date */}
-        <View style={Styles.fieldContainer}>
-            <Text style={Styles.date}>Ngày mua: {`${date.getDate()}/${date.getMonth()}/${date.getFullYear()} `}</Text>
+          </View>
+          {/* Buying date */}
+          <View style={Styles.fieldContainer}>
+            <Text style={Styles.date}>Ngày mua: {`${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()} `}</Text>
             <View style={Styles.btnContainer}>
             <Button
                 color="#6C5B7B"

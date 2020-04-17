@@ -180,7 +180,7 @@ const SellingScreen = () => {
           }
           {/* Buying date */}
           <View style={Styles.fieldContainer}>
-            <Text style={Styles.date}>Ngày nhập: {`${date.getDate()}/${date.getMonth()}/${date.getFullYear()} `}</Text>
+            <Text style={Styles.date}>Ngày nhập: {`${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()} `}</Text>
             <View style={Styles.btnContainer}>
               <Button
                 color="#6C5B7B"

@@ -36,6 +36,8 @@ import StatisticScreen from './screens/StatisticScreen';
 import SellingListScreen from './screens/SellingListScreen';
 import SellingDetailsScreen from './screens/SellingDetailsScreen';
 import StatisticSellingScreen from './screens/StatisticSellingScreen';
+import DailyStatisticSellingScreen from './screens/DailyStatisticSellingScreen';
+import StatisticMemberScreen from './screens/StatisticMemberScreen';
 
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
@@ -124,7 +126,8 @@ const App: () => React$Node = () => {
         <Stack.Screen name="SellingListScreen" component={SellingListScreen} />
         <Stack.Screen name="SellingDetailsScreen" component={SellingDetailsScreen} />
         <Stack.Screen name="StatisticSelling" component={StatisticSellingScreen} />
-        
+        <Stack.Screen name="DailyStatisticSelling" component={DailyStatisticSellingScreen} />
+        <Stack.Screen name="StatisticMember" component={StatisticMemberScreen} />
         
       </Stack.Navigator>
     </NavigationContainer>

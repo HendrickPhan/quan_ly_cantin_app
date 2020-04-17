@@ -11,7 +11,7 @@ const StatisticScreen = ({navigation}) => {
         <Text style={Styles.title}>THỐNG KÊ</Text>
         <TouchableOpacity
           style={[Styles.btnContainer, { backgroundColor: "#F67280" }]}
-          onPress={() => navigation.navigate('ManageMember')}
+          onPress={() => navigation.navigate('StatisticMember')}
         >
           <Text style={Styles.btnText}>Thống kê người mua</Text>
         </TouchableOpacity>

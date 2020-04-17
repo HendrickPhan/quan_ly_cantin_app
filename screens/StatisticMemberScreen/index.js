@@ -8,13 +8,13 @@ import Styles from './styles';
 import Settings from '../../settings';
 import { useSelector } from "react-redux";
 
-const StatisticSellingScreen = () => {
-  const [type, setType] = useState("0");
-  const [fromDate, setFromDate] = useState(new Date());
-  const [toDate, setToDate] = useState(new Date());
+const StatisticMemberScreen = ({navigation}) => {
+  const today = new Date();
+  const [fromDate, setFromDate] = useState(new Date(today.getFullYear(), today.getMonth(), 1));
+  const [toDate, setToDate] = useState(today);
   const [showFromDatePicker, setShowFromDatePicker] = useState(false);
   const [showToDatePicker, setShowToDatePicker] = useState(false);
-  
+
   const [statisticList, setStatisticList] = useState([]);
 
   const token = useSelector(state => {
@@ -22,7 +22,7 @@ const StatisticSellingScreen = () => {
   });
 
   const fetchStatistic = () => {
-    fetch(Settings.API_DOMAIN + `selling-bill/statistic?from_date=${DateStrFromDateTime(fromDate)}&to_date=${DateStrFromDateTime(toDate)}`, {
+    fetch(Settings.API_DOMAIN + `selling-bill/member-statistic?from_date=${DateStrFromDateTime(fromDate)}&to_date=${DateStrFromDateTime(toDate)}`, {
       method: 'get',
       headers: {
         Accept: 'application/json',
@@ -76,21 +76,25 @@ const StatisticSellingScreen = () => {
         </View>
 
         <View style={Styles.listTitleContainer}>
-          <Text style={Styles.listTitle}>Ngày</Text>
+          <Text style={Styles.listTitle}>Người mua</Text>
           <Text style={Styles.listTitle}>Đã trả</Text>
           <Text style={Styles.listTitle}>Nợ</Text>
           <Text style={Styles.listTitle}>Tổng</Text>
         </View>
 
         {statisticList.map((v, i) => {
-          var date = v.gdate.split("-")
-          date = date[2] + '/' + date[1] + '/' + date[0]
           return (
-            <TouchableOpacity 
-              key={i} 
+            <TouchableOpacity
+              key={i}
               style={Styles.listItemContainer}
+              onPress={() => {
+                  navigation.navigate('DailyStatisticSelling', {
+                    date: DateStrFromDateTime(new Date()),
+                  });
+                }
+              }
             >
-              <Text style={Styles.listItem}>{date}</Text>
+              <Text style={Styles.listItem}>{v.member ? v.member.name : 'Không lưu'}</Text>
               <Text style={[Styles.listItem, { textAlign: "right" }]}>{NumberWithCommas(v.total_paid)}</Text>
               <Text style={[Styles.listItem, { textAlign: "right" }]}>{NumberWithCommas(v.total_total - v.total_paid)}</Text>
               <Text style={[Styles.listItem, { textAlign: "right" }]}>{NumberWithCommas(v.total_total)}</Text>
@@ -106,7 +110,7 @@ const StatisticSellingScreen = () => {
           mode="date"
           display="default"
           onChange={(event, selectedDate) => {
-            const currentDate = selectedDate || date;
+            const currentDate = selectedDate || fromDate;
             setShowFromDatePicker(Platform.OS === 'ios');
             setFromDate(currentDate);
           }}
@@ -118,7 +122,7 @@ const StatisticSellingScreen = () => {
           mode="date"
           display="default"
           onChange={(event, selectedDate) => {
-            const currentDate = selectedDate || date;
+            const currentDate = selectedDate || toDate;
             setShowToDatePicker(Platform.OS === 'ios');
             setToDate(currentDate);
           }}
@@ -129,4 +133,4 @@ const StatisticSellingScreen = () => {
   );
 }
 
-export default StatisticSellingScreen
+export default StatisticMemberScreen
